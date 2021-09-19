@@ -15,6 +15,14 @@ const menuPrompts = [
     }
 ];
 
+const departmentPrompts = [
+    {
+        type: 'input',
+        name: 'name',
+        message: 'Enter department name'
+    }
+];
+
 module.exports = {
     menuPrompts
 }
