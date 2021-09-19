@@ -38,6 +38,9 @@ promptMenu = () =>{
             case 'AAD': // add department
                 promptAddDepartment();
                 break;
+            case 'AAR': // add department
+                promptAddRole();
+                break;
         }
         
     });
@@ -50,3 +53,13 @@ promptAddDepartment = () => {
         sqlquery.addDepartment(department, mysqlConn, promptMenu);
     });
 };
+
+promptAddRole = () => {
+    sqlquery.getDepartmentPromptJson(mysqlConn, (choices)=>{
+        inquirer.prompt(prompts.rolePropmts(choices))
+        .then( role => {
+            console.log(role);
+            sqlquery.addRole(role, mysqlConn, promptMenu);
+        });
+    });
+}

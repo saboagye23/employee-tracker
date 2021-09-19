@@ -23,7 +23,27 @@ const departmentPrompts = [
     }
 ];
 
+const rolePropmts = (choices) => [
+    {
+        type: "input",
+        name: "title",
+        message: "Enter role title: "
+      },
+      {
+        type: "input",
+        name: "salary",
+        message: "What's the salary for the role? "
+      },
+      {
+        type: "list",
+        name: "departmentId",
+        message: "Select department for this role: ",
+        choices: choices
+      },
+];
+
 module.exports = {
     menuPrompts,
-    departmentPrompts
+    departmentPrompts,
+    rolePropmts
 }

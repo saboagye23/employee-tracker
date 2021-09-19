@@ -2,7 +2,7 @@ require("console.table");
 
 class SQLQuery {
 
-    executeQuery(conn, sql, callback){
+    executeViewQuery(conn, sql, callback){
         return conn.query(sql, (err, res) => {
             if (err) throw err;
             
@@ -24,7 +24,7 @@ class SQLQuery {
     // view all departments
     viewDepartments(conn, callback){
         const sql = 'SELECT id, name FROM department';
-        return this.executeQuery(conn, sql, callback);
+        return this.executeViewQuery(conn, sql, callback);
     }
 
     addDepartment(department, conn, callback){
@@ -32,9 +32,21 @@ class SQLQuery {
         return this.execute(conn, sql, callback);
     }
 
+    getDepartmentPromptJson(conn, promptCallback){
+        const sql = 'SELECT id, name FROM department';
+        conn.query(sql, (err, res) => {
+            if (err) return [];
+            const departChoices = res.map(({ id, name }) => ({
+                value: id, name: name
+            }));
+
+            promptCallback(departChoices);
+        });
+    }
+
     viewRoles(conn, callback){
         const sql = `SELECT r.title, r.id, d.name, r.salary FROM role r INNER JOIN department d ON d.id = r.department_id`;
-        return this.executeQuery(conn, sql, callback);
+        return this.executeViewQuery(conn, sql, callback);
     }
 
     addRole(role, conn, callback){
@@ -49,7 +61,7 @@ class SQLQuery {
         FROM employee e, role r, department d
         WHERE r.id = e.role_id AND d.id = r.department_id`;
 
-        return this.executeQuery(conn, sql, callback);
+        return this.executeViewQuery(conn, sql, callback);
     }
 
     addEmployee(employee, conn, callback){
