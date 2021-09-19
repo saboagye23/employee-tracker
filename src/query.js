@@ -4,7 +4,7 @@ class SQLQuery {
 
     executeViewQuery(conn, sql, callback){
         return conn.query(sql, (err, res) => {
-            if (err) throw err;
+            if (err) return console.error(err);
             
             console.log('\n\r');
             console.table(res);
@@ -15,8 +15,7 @@ class SQLQuery {
 
     execute(conn, sql, callback){
         return conn.execute(sql, (err, res) => {
-            if (err) throw err;
-            console.log(res);
+            if (err) return console.error(err);
             callback();
         });
     }
@@ -83,8 +82,8 @@ class SQLQuery {
         return this.execute(conn, sql, callback);
     }
 
-    updateEmployee(employee){
-        const sql = `UPDATE employee SET role_id = ${employee.id} WHERE id=${employee.roleId}`;
+    updateEmployeeRole(employee, conn, callback){
+        const sql = `UPDATE employee SET role_id = ${employee.roleId} WHERE id=${employee.id}`;
         return this.execute(conn, sql, callback);
     }
 

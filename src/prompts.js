@@ -10,7 +10,8 @@ const menuPrompts = [
             {name: 'Add A Department', value:'AAD'},
             {name: 'Add A Role', value:'AAR'}, 
             {name: 'Add An Employee', value:'AAE'}, 
-            {name: 'Update An Employee Role', value:'UER'}
+            {name: 'Update An Employee Role', value:'UER'},
+            {name: 'Quit', value: 'QUIT'},
         ]
     }
 ];
@@ -70,7 +71,7 @@ employeePrompts = (roleChoices, managerChoices) => [
     }
 ];
 
-updateEmployeeRolePrompt = (roleChoices, managerChoices) => [
+employeeRolePrompt = (roleChoices, managerChoices) => [
     {
         type: "list",
         name: "id",
@@ -85,11 +86,10 @@ updateEmployeeRolePrompt = (roleChoices, managerChoices) => [
     } 
 ];
 
-
-
 module.exports = {
     menuPrompts,
     departmentPrompts,
     rolePropmts,
-    employeePrompts
+    employeePrompts,
+    employeeRolePrompt
 }

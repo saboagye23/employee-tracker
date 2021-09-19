@@ -3,6 +3,7 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const prompts = require('./src/prompts');
 const sqlquery = require('./src/query');
+const { exit } = require('process');
 
 //create mysql db connection
 const mysqlConn = mysql.createConnection({
@@ -22,7 +23,8 @@ mysqlConn.connect((err) => {
 });
 
 promptMenu = () =>{
-    inquirer.prompt(prompts.menuPrompts)
+    return inquirer
+    .prompt(prompts.menuPrompts)
     .then( ({ menu }) => {
         switch(menu){
             case 'VAD': //View All Departments
@@ -37,14 +39,17 @@ promptMenu = () =>{
             case 'AAD': // add department
                 promptAddDepartment();
                 break;
-            case 'AAR': // add department
+            case 'AAR': // add role
                 promptAddRole();
                 break;
-            case 'AAE': // add department
+            case 'AAE': // add employee
                 promptAddEmployee();
-                break;    
+                break; 
+            case 'UER': // update employee role
+                promptUpdateEmployeeRole();
+                break;   
         }
-        
+        process.exit(0);
     });
 };
 
@@ -73,6 +78,19 @@ promptAddEmployee = () => {
             .then( employee => {
                 console.log(employee);
                 sqlquery.addEmployee(employee, mysqlConn, promptMenu);
+            });
+
+        });
+    });
+};
+
+promptUpdateEmployeeRole = () => {
+    sqlquery.getRolePromptJson(mysqlConn, (roleChoices) => {
+        sqlquery.getEmployeePromptJson(mysqlConn, (employeeChoices) =>{
+            inquirer.prompt(prompts.employeeRolePrompt(roleChoices, employeeChoices))
+            .then( employee => {
+                console.log(employee);
+                sqlquery.updateEmployeeRole(employee, mysqlConn, promptMenu);
             });
 
         });
