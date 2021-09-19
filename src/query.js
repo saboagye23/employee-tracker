@@ -54,7 +54,19 @@ class SQLQuery {
         return this.execute(conn, sql, callback);
     }
 
-    viewEmployees(conn){      
+    getRolePromptJson(conn, promptCallback){
+        const sql = 'SELECT id, title FROM role';
+        conn.query(sql, (err, res) => {
+            if (err) return [];
+            const roleChoices = res.map(({ id, title }) => ({
+                value: id, name: title
+            }));
+
+            promptCallback(roleChoices);
+        });
+    }
+
+    viewEmployees(conn, callback){      
         const sql = `SELECT e.id, e.first_name, e.last_name, r.title, d.name as department, r.salary,
         (SELECT m.first_name FROM employee m 
         where e.manager_id IS NOT NULL AND m.id = e.manager_id) AS manager
@@ -74,6 +86,18 @@ class SQLQuery {
     updateEmployee(employee){
         const sql = `UPDATE employee SET role_id = ${employee.id} WHERE id=${employee.roleId}`;
         return this.execute(conn, sql, callback);
+    }
+
+    getEmployeePromptJson(conn, promptCallback){
+        const sql = 'SELECT id, first_name, last_name FROM employee';
+        conn.query(sql, (err, res) => {
+            if (err) return [];
+            const employeeChoices = res.map(({ id, first_name, last_name }) => ({
+                value: id, name: `${first_name} ${last_name}`
+            }));
+
+            promptCallback(employeeChoices);
+        });
     }
 
 }

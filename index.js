@@ -3,7 +3,6 @@ const fs = require('fs');
 const inquirer = require('inquirer');
 const prompts = require('./src/prompts');
 const sqlquery = require('./src/query');
-const { addDepartment } = require('./src/query');
 
 //create mysql db connection
 const mysqlConn = mysql.createConnection({
@@ -41,6 +40,9 @@ promptMenu = () =>{
             case 'AAR': // add department
                 promptAddRole();
                 break;
+            case 'AAE': // add department
+                promptAddEmployee();
+                break;    
         }
         
     });
@@ -62,4 +64,17 @@ promptAddRole = () => {
             sqlquery.addRole(role, mysqlConn, promptMenu);
         });
     });
-}
+};
+
+promptAddEmployee = () => {
+    sqlquery.getRolePromptJson(mysqlConn, (roleChoices) => {
+        sqlquery.getEmployeePromptJson(mysqlConn, (employeeChoices) =>{
+            inquirer.prompt(prompts.employeePrompts(roleChoices, employeeChoices))
+            .then( employee => {
+                console.log(employee);
+                sqlquery.addEmployee(employee, mysqlConn, promptMenu);
+            });
+
+        });
+    });
+};
