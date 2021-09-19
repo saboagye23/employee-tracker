@@ -2,33 +2,44 @@ require("console.table");
 
 class SQLQuery {
 
-    executeQuery(conn, sql){
+    executeQuery(conn, sql, callback){
         return conn.query(sql, (err, res) => {
             if (err) throw err;
             
             console.log('\n\r');
             console.table(res);
             console.log('\n\r');
+            callback();
+        });
+    }
+
+    execute(conn, sql, callback){
+        return conn.execute(sql, (err, res) => {
+            if (err) throw err;
+            console.log(res);
+            callback();
         });
     }
 
     // view all departments
-    viewDepartments(conn){
+    viewDepartments(conn, callback){
         const sql = 'SELECT id, name FROM department';
-        return this.executeQuery(conn, sql);
+        return this.executeQuery(conn, sql, callback);
     }
 
-    addDepartment(department){
-        return `INSERT INTO department (name) VALUES ('${department.name}')`;
+    addDepartment(department, conn, callback){
+        const sql = `INSERT INTO department (name) VALUES ('${department.name}')`;
+        return this.execute(conn, sql, callback);
     }
 
-    viewRoles(conn){
+    viewRoles(conn, callback){
         const sql = `SELECT r.title, r.id, d.name, r.salary FROM role r INNER JOIN department d ON d.id = r.department_id`;
-        return this.executeQuery(conn, sql);
+        return this.executeQuery(conn, sql, callback);
     }
 
-    addRole(role){
-        return `INSERT INTO role (title, salary, department_id) VALUES ('${role.title}', ${role.salary}, ${role.departmentId})`;
+    addRole(role, conn, callback){
+        const sql = `INSERT INTO role (title, salary, department_id) VALUES ('${role.title}', ${role.salary}, ${role.departmentId})`;
+        return this.execute(conn, sql, callback);
     }
 
     viewEmployees(conn){      
@@ -38,17 +49,19 @@ class SQLQuery {
         FROM employee e, role r, department d
         WHERE r.id = e.role_id AND d.id = r.department_id`;
 
-        return this.executeQuery(conn, sql);
+        return this.executeQuery(conn, sql, callback);
     }
 
-    addEmployee(employee){
-        return `
-        INSERT INTO employee (first_name, last_name, role_id, manager_id)
+    addEmployee(employee, conn, callback){
+        const sql = 
+        `INSERT INTO employee (first_name, last_name, role_id, manager_id)
         VALUES ('${employee.firstName}', '${employee.lastName}', ${employee.roleId}, ${employee.managerId})`;
+        return this.execute(conn, sql, callback);
     }
 
     updateEmployee(employee){
-        return `UPDATE employee SET role_id = ${employee.id} WHERE id=${employee.roleId}`;
+        const sql = `UPDATE employee SET role_id = ${employee.id} WHERE id=${employee.roleId}`;
+        return this.execute(conn, sql, callback);
     }
 
 }
